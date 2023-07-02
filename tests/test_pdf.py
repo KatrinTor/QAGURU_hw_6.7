@@ -1,9 +1,10 @@
+import os
+from conftest import RES_DIR
 from pypdf import PdfReader
-# TODO оформить в тест, добавить ассерты и использовать универсальный путь
-reader = PdfReader("../resources/docs-pytest-org-en-latest.pdf")
-number_of_pages = len(reader.pages)
-page = reader.pages[0]
-text = page.extract_text()
-print(page)
-print(number_of_pages)
-print(text)
+
+def test_read_pdf():
+    pdf_file = os.path.join(RES_DIR, 'docs-pytest-org-en-latest.pdf')
+    reader = PdfReader(pdf_file)
+
+    assert len(reader.pages) == 412
+    assert 'pytest Documentation' in reader.pages[0].extract_text()

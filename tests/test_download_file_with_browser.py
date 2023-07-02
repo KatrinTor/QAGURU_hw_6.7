@@ -1,21 +1,22 @@
+import os
 import time
-
+from conftest import TMP_DIR
 from selenium import webdriver
 from selene import browser
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
-# TODO оформить в тест, добавить ассерты и использовать универсальный путь к tmp
 
 options = webdriver.ChromeOptions()
 prefs = {
-    "download.default_directory": '/path_to_project' + 'tmp',
+    "download.default_directory": TMP_DIR,
     "download.prompt_for_download": False
 }
 options.add_experimental_option("prefs", prefs)
-
 browser.config.driver_options = options
 
-browser.open("https://github.com/pytest-dev/pytest")
-browser.element(".d-none .Button-label").click()
-browser.element('[data-open-app="link"]').click()
+def test_download_with_requests(tmp_dir_manager):
+    browser.open("https://github.com/pytest-dev/pytest")
+    browser.element(".d-none .Button-label").click()
+    browser.element('[data-open-app="link"]').click()
+
+    time.sleep(5)
+
+    assert os.path.exists(os.path.join(TMP_DIR, 'pytest-main.zip'))
